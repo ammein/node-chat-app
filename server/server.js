@@ -20,12 +20,13 @@ io.on('connection' , (socket)=>{
     console.log("New User Connected");
 
     socket.emit('newMessage', generateMessage('Admin' , "Welcome to the chat app"));
+
     socket.broadcast.emit('newMessage', generateMessage('Admin' , 'New User Joined'));
-    socket.on('createMessage', (createMessage)=>{
+
+    socket.on('createMessage', (createMessage ,callback)=>{
         console.log(JSON.stringify(createMessage , undefined , 2));
-        // socket.emit() -> emits an event to a SINGLE connection
-        // io.emit() -> emits EVERY single connection
         io.emit('newMessage' , generateMessage(createMessage.from , createMessage.text));
+        callback('This is from the server');
         // Fired everybody but myself, event must be identical
         // socket.broadcast.emit('newMessage' , {
         //     from : createMessage.from,
