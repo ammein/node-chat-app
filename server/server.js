@@ -4,6 +4,7 @@ const publicPath = path.join(__dirname , "../public");
 const port = process.env.PORT || 8000;
 const express = require('express');
 const socketIO = require('socket.io');
+const {generateMessage} = require('./utils/message');
 
 var app = express();
 var server = http.createServer(app);
@@ -18,24 +19,13 @@ app.use(express.static(publicPath));
 io.on('connection' , (socket)=>{
     console.log("New User Connected");
 
-    socket.emit('newMessage', {
-        from : "Admin",
-        text : "Welcome to the chat app"
-    });
-    socket.broadcast.emit('newMessage', {
-        from : "Admin",
-        text : "New User Joined",
-        createdAt : new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin' , "Welcome to the chat app"));
+    socket.broadcast.emit('newMessage', generateMessage('Admin' , 'New User Joined'));
     socket.on('createMessage', (createMessage)=>{
         console.log(JSON.stringify(createMessage , undefined , 2));
         // socket.emit() -> emits an event to a SINGLE connection
         // io.emit() -> emits EVERY single connection
-        io.emit('newMessage' , {
-            from : createMessage.from,
-            text : createMessage.text,
-            createAt : new Date().getTime()
-        });
+        io.emit('newMessage' , generateMessage(createMessage.from , createMessage.text));
         // Fired everybody but myself, event must be identical
         // socket.broadcast.emit('newMessage' , {
         //     from : createMessage.from,
