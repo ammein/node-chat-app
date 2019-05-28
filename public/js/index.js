@@ -41,13 +41,18 @@ $('#message-form').on('submit' , function (e) {
     // preventDefault is going to to prevent DEFAULT BEHAVIOUR
     // It's default behaviour is the page refresh with the query string.
     e.preventDefault();  
-
+    var self = this;
+    // Disable form
+    self.setAttribute('disabled' , true);
+    self.firstElementChild.setAttribute('disabled' , true);
 
     socket.emit('createMessage', {
         from : 'User',
-        text : $('[name=message]').val()
+        text : e.target.elements.message.value
     } , function (){
-
+        // enable form
+        self.firstElementChild.removeAttribute('disabled');
+        self.firstElementChild.value = "";
     });
 });
 

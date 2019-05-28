@@ -2,6 +2,7 @@ const path = require('path');
 const http = require('http');
 const publicPath = path.join(__dirname , "../public");
 const port = process.env.PORT || 8000;
+const hostname = process.env.HOSTNAME || "http://localhost";
 const express = require('express');
 const socketIO = require('socket.io');
 const {generateMessage} = require('./utils/message');
@@ -45,5 +46,5 @@ io.on('connection' , (socket)=>{
 });
 
 server.listen(port , ()=>{
-    console.log(`Started on port ${port}`);
+    console.log(`Started on ${hostname}:${port}`);
 });
